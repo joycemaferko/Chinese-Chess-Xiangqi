@@ -58,12 +58,60 @@ class XiangqiGame:
         """Returns True if given color is in check, otherwise returns False"""
         pass
 
-    def make_move(self, sq_from, sq_to):
+    def make_move(self, str_from, str_to):
         """
         Checks move for validity, makes move, checks and updates game state as neccessary.
         Returns true if move is successful, false otherwise
         """
-        pass
+        #Parses string input and matches the string values to the list of lists board.
+        current_col = ord(str_from[0]) - 97
+        current_row = int(str_from[1:]) - 1
+        new_col = ord(str_to[0]) - 97
+        new_row = int(str_to[1:]) - 1
+        moving_piece = self._board[current_row][current_col]
+        player = self.get_player_turn()
+
+        # adding exception for index error to allow for iterating through potential moves
+        # try:
+        #     destination = self._board[new_col][new_row]
+        # except IndexError:
+        #     return False
+
+        # Checks that the game has not already been won
+        if self._game_state != "UNFINISHED":
+            return False
+
+        #Checks to ensure players are moving in turn
+        # if moving_piece.get_color() != player:
+        #     return False
+
+        # returns False if the move fails validity checks for the piece in question
+        # if not moving_piece.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+        #     return False
+
+        self.the_move(str_from, str_to, moving_piece)
+
+        # Switch Player Turn
+        if self.get_player_turn() == "red":
+            self.set_player_turn("black")
+            return True
+        else:
+            self.set_player_turn("red")
+            return True
+
+    def the_move(self, str_from, str_to, moving_piece):
+        """actually conduct the move"""
+
+        #Parses string input and matches the string values to the list of lists board.
+        current_col = ord(str_from[0]) - 97
+        current_row = int(str_from[1:]) - 1
+        new_col = ord(str_to[0]) - 97
+        new_row = int(str_to[1:]) - 1
+        # moving_piece = self._board[current_col][current_row]
+
+        self._board[new_row][new_col] = moving_piece
+        self._board[current_row][current_col] = None
+        
 
 class GamePiece:
     """Create GamePiece class, which provides general rules for all pieces"""
@@ -133,5 +181,11 @@ class Soldier(GamePiece):
 
 game = XiangqiGame()
 
-game.print_board()
 
+
+
+print(game.make_move("a1", "a2"))
+print(game.make_move("f10", "e9"))
+# print(game.make_move("e1","e3"))
+
+game.print_board()
