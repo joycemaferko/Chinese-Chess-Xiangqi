@@ -69,3 +69,30 @@ class GamePiece:
         """
         pass
 
+class Chariot(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
+
+class Horse(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
+
+class Elephant(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
+
+class Adviser(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
+
+class General(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
+
+class Cannon(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
+
+class Soldier(GamePiece):
+    """Creates Chariot sub-class"""
+    pass
