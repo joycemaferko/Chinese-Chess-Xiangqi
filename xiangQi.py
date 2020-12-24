@@ -147,7 +147,7 @@ class GamePiece:
 
         self._location = location
 
-    def is_valid_move(self, current_col, curr_row, new_col, new_row, board):
+    def fratricide_check(self, current_col, current_row, new_col, new_row, board):
         """tests move against general rules for all pieces. Returns true if move
         is successful, otherwise false. 
 
@@ -157,16 +157,16 @@ class GamePiece:
         # if board[curr_row][current_col] is None:
         #     return False
         
-        moving_piece = board[curr_row][current_col]
+        moving_piece = board[current_row][current_col]
         destination = board[new_row][new_col]
 
         # Prevents fratricide
         if destination is not None:
             if moving_piece.get_color() == destination.get_color():
                 print("fratricide")
-                return False
+                return True
         
-        return True
+        
 
 
         
@@ -174,7 +174,59 @@ class GamePiece:
 
 class Chariot(GamePiece):
     """Creates Chariot sub-class"""
-    pass
+    
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
+
+        moving_piece = board[current_row][current_col]
+        destination = board[new_row][new_col]
+        move_delta_horizontal = abs(current_col - new_col)
+        move_delta_vertical = abs(current_row - new_row)
+        diagonal_move = abs(new_col - current_col) != 0 and abs(current_row - new_row) != 0
+
+        if diagonal_move:
+            return False
+
+        # vertical block
+        for x in range(1, move_delta_vertical):
+
+            # if we are moving up vertically, then we check the values of x in the range of 1 to the end of the
+            # movement delta subtracted from the y coordinate. If any of them are other than "---", there is a block,
+            # so return False.
+            if current_row >= new_row:
+                if board[current_row - x][current_col] is not None:
+                    print("vertical block")
+                    return False
+
+            # if we are moving down vertically, we make the same check as above, except that we add the values of x to
+            # the y coordinate.
+            else:
+                if board[current_row + x][current_col] is not None:
+                    print("vertical block")
+                    return False
+
+        # horizontal block
+        for y in range(1, move_delta_horizontal):
+
+            # if we are moving left, we check the values of y from 1 to the end of the movement delta subtracted from
+            # the x coordinate. If any of them are other than "---", there is a block, return False.
+            if current_col > new_col:
+                if board[current_row][current_col - y] is not None:
+                    print("horizontal block")
+                    return False
+
+            # if we are moving right, we make the same check as above, except that we add the values of y to the x
+            # coordinate.
+            else:
+                if board[current_row][current_col + y] is not None:
+                    print("horizontal block")
+                    return False
+
+        return True
+
+
 
 class Horse(GamePiece):
     """Creates Horse sub-class"""
@@ -203,13 +255,6 @@ class Soldier(GamePiece):
 game = XiangqiGame()
 
 
-
-
 print(game.make_move("a1", "a2"))
-print(game.make_move("a7", 'a4'))
-print(game.make_move("c4", 'e4'))
-
-
-
 
 game.print_board()
