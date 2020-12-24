@@ -1,6 +1,6 @@
 # Author: Matthew Joyce
 # Date: 12/23/2020
-# Description: Implemenation of Xiangqi in Python
+# Description: Implemenation of Xiangqi in Python. Add Hanzi for River and pieces
 
 class XiangqiGame: 
     """Create XQ Game class, which sets the board and controls game state"""
@@ -77,6 +77,10 @@ class XiangqiGame:
         # except IndexError:
         #     return False
 
+        # # Checks to ensure that there is actually a piece on the square to move
+        if moving_piece is None:
+            return False
+
         # Checks that the game has not already been won
         if self._game_state != "UNFINISHED":
             return False
@@ -86,8 +90,8 @@ class XiangqiGame:
             return False
 
         # returns False if the move fails validity checks for the piece in question
-        # if not moving_piece.is_valid_move(current_col, current_row, new_col, new_row, self._board):
-        #     return False
+        if not moving_piece.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+            return False
 
         self.the_move(str_from, str_to, moving_piece)
 
@@ -149,7 +153,24 @@ class GamePiece:
 
         May take this out if I can just implement in my sub-classes
         """
-        pass
+        # If there is not actually a piece to move (Don't think I need, as we won't get here unless there's a piece to move)
+        # if board[curr_row][current_col] is None:
+        #     return False
+        
+        moving_piece = board[curr_row][current_col]
+        destination = board[new_row][new_col]
+
+        # Prevents fratricide
+        if destination is not None:
+            if moving_piece.get_color() == destination.get_color():
+                print("fratricide")
+                return False
+        
+        return True
+
+
+        
+        
 
 class Chariot(GamePiece):
     """Creates Chariot sub-class"""
@@ -185,6 +206,9 @@ game = XiangqiGame()
 
 
 print(game.make_move("a1", "a2"))
+print(game.make_move("a7", 'a4'))
+print(game.make_move("c4", 'e4'))
+
 
 
 
