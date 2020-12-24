@@ -77,8 +77,12 @@ class XiangqiGame:
         # except IndexError:
         #     return False
 
-        # # Checks to ensure that there is actually a piece on the square to move
+        # Checks to ensure that there is actually a piece on the square to move
         if moving_piece is None:
+            return False
+
+        # Checks to ensure that player is actually moving to a different square
+        if str_from == str_to:
             return False
 
         # Checks that the game has not already been won
@@ -166,12 +170,6 @@ class GamePiece:
                 print("fratricide")
                 return True
         
-        
-
-
-        
-        
-
 class Chariot(GamePiece):
     """Creates Chariot sub-class"""
     
@@ -180,8 +178,8 @@ class Chariot(GamePiece):
         if self.fratricide_check(current_col, current_row, new_col, new_row, board):
             return False
 
-        moving_piece = board[current_row][current_col]
-        destination = board[new_row][new_col]
+        # moving_piece = board[current_row][current_col]
+        # destination = board[new_row][new_col]
         move_delta_horizontal = abs(current_col - new_col)
         move_delta_vertical = abs(current_row - new_row)
         diagonal_move = abs(new_col - current_col) != 0 and abs(current_row - new_row) != 0
@@ -230,31 +228,94 @@ class Chariot(GamePiece):
 
 class Horse(GamePiece):
     """Creates Horse sub-class"""
-    pass
+
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
+
+        # defines all legal options for the horse piece
+        horse_move = (abs(new_row - current_row) == 2 and abs(new_col - current_col) == 1) or \
+                     (abs(new_row - current_row) == 1 and abs(new_col - current_col) == 2)
+
+
+        if not horse_move:
+            return False
+
+        # testing blocks
+        if abs(new_row - current_row) == 2:
+            # first square move up
+            if current_row > new_row:
+                if board[current_row - 1][current_col] is not None:
+                    print("horse block")
+                    return False
+            # first square move down
+            if current_row < new_row:
+                if board[current_row + 1][current_col] is not None:
+                    print("horse block")
+                    return False
+
+        if abs(new_row - current_row) == 1:
+            # first square move left
+            if current_col > new_col:
+                if board[current_row][current_col - 1] is not None:
+                    print("horse block")
+                    return False
+            # first square move right
+            if current_col < new_col:
+                if board[current_row][current_col + 1] is not None:
+                    print("horse block")
+                    return False
+
+        return True
 
 class Elephant(GamePiece):
     """Creates Elephant sub-class"""
-    pass
+    
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
 
 class Adviser(GamePiece):
     """Creates Adviser sub-class"""
-    pass
+    
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
 
 class General(GamePiece):
     """Creates General sub-class"""
-    pass
+    
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
 
 class Cannon(GamePiece):
     """Creates Cannon sub-class"""
-    pass
+    
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
 
 class Soldier(GamePiece):
     """Creates Soldier sub-class"""
-    pass
+    
+    def is_valid_move(self, current_col, current_row, new_col, new_row, board):
+        
+        if self.fratricide_check(current_col, current_row, new_col, new_row, board):
+            return False
 
 game = XiangqiGame()
 
 
 print(game.make_move("a1", "a2"))
+print(game.make_move("i10", "i9"))
+print(game.make_move('a2','b2'))
+print(game.make_move('i9','h9'))
+print(game.make_move('b1','a3'))
 
 game.print_board()
