@@ -11,22 +11,22 @@ class XiangqiGame:
         self._game_state = "UNFINISHED"
         self._player_turn = "red"
         self._board = [
-            [Chariot("Red", "a1", "r R"), Horse("Red", "b1", "r H"), Elephant("Red", "c1", "r E"), Adviser("Red", "d1", "r A"),
-                 General("Red", "e1", "r G"), Adviser("Red", "f1", "r A"), Elephant("Red", "g1", "r E"), Horse("Red", "h1", "r H"),
-                 Chariot("Red", "i1", "r R")],
+            [Chariot("red", "a1", "r R"), Horse("red", "b1", "r H"), Elephant("red", "c1", "r E"), Adviser("red", "d1", "r A"),
+                 General("red", "e1", "r G"), Adviser("red", "f1", "r A"), Elephant("red", "g1", "r E"), Horse("red", "h1", "r H"),
+                 Chariot("red", "i1", "r R")],
             [None, None, None, None, None, None, None, None, None],
-            [None, Cannon("Red", "b3", "r C"), None, None, None, None, None, Cannon("Red", "h3", "r C"), None],
-            [Soldier("Red", "a4", "r S"), None, Soldier("Red", "c4", "r S"), None, Soldier("Red", "e4","r S"), None,
-                 Soldier("Red", "g4", "r S"), None, Soldier("Red", "i4", "r S")],
+            [None, Cannon("red", "b3", "r C"), None, None, None, None, None, Cannon("red", "h3", "r C"), None],
+            [Soldier("red", "a4", "r S"), None, Soldier("red", "c4", "r S"), None, Soldier("red", "e4","r S"), None,
+                 Soldier("red", "g4", "r S"), None, Soldier("red", "i4", "r S")],
             [None, None, None, None, None, None, None, None, None],
             [None, None, None, None, None, None, None, None, None],
-            [Soldier("Black", "a7","b S"), None, Soldier("Black", "c7","b S"), None, Soldier("Black", "e7","b S"), None,
-                 Soldier("Black", "g7","b S"), None, Soldier("Black", "i7","b S")],
-                [None, Cannon("Black", "b8", "b C"), None, None, None, None, None, Cannon("Black", "h8", "b C"), None],
+            [Soldier("black", "a7","b S"), None, Soldier("black", "c7","b S"), None, Soldier("black", "e7","b S"), None,
+                 Soldier("black", "g7","b S"), None, Soldier("black", "i7","b S")],
+                [None, Cannon("black", "b8", "b C"), None, None, None, None, None, Cannon("black", "h8", "b C"), None],
                 [None, None, None, None, None, None, None, None, None],
-                [Chariot("Black", "a10","b R"), Horse("Black", "b10","b H"), Elephant("Black", "c10","b E"), Adviser("Black", "d10","b A"),
-                 General("Black", "e10","b G"), Adviser("Black", "f10","b A"), Elephant("Black", "g10","b E"), Horse("Black", "h10","b H"),
-                 Chariot("Black", "i10","b R")]
+                [Chariot("black", "a10","b R"), Horse("black", "b10","b H"), Elephant("black", "c10","b E"), Adviser("black", "d10","b A"),
+                 General("black", "e10","b G"), Adviser("black", "f10","b A"), Elephant("black", "g10","b E"), Horse("black", "h10","b H"),
+                 Chariot("black", "i10","b R")]
         ]
 
     def get_player_turn(self):
@@ -82,8 +82,8 @@ class XiangqiGame:
             return False
 
         #Checks to ensure players are moving in turn
-        # if moving_piece.get_color() != player:
-        #     return False
+        if moving_piece.get_color() != player:
+            return False
 
         # returns False if the move fails validity checks for the piece in question
         # if not moving_piece.is_valid_move(current_col, current_row, new_col, new_row, self._board):
@@ -185,7 +185,7 @@ game = XiangqiGame()
 
 
 print(game.make_move("a1", "a2"))
-print(game.make_move("f10", "e9"))
-# print(game.make_move("e1","e3"))
+
+
 
 game.print_board()
