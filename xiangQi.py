@@ -90,8 +90,8 @@ class XiangqiGame:
             return False
 
         #Checks to ensure players are moving in turn
-        if moving_piece.get_color() != player:
-            return False
+        # if moving_piece.get_color() != player:
+        #     return False
 
         # returns False if the move fails validity checks for the piece in question
         if not moving_piece.is_valid_move(current_col, current_row, new_col, new_row, self._board):
@@ -277,6 +277,46 @@ class Elephant(GamePiece):
         if self.fratricide_check(current_col, current_row, new_col, new_row, board):
             return False
 
+        over_river = new_row > 4 and self._color == "red" or new_row < 5 and self._color == "black"
+        elephant_diagonal_move = abs(new_row - current_row) == 2 and abs(new_col - current_col) == 2
+
+        # Elephant cannot cross river. If desired square is over river, return False
+        if over_river:
+            print("Elephant cannot cross river")
+            return False
+
+        #Elephant can only move two squares diagonally. Otherwise return False.
+        if not elephant_diagonal_move:
+            print("Elephant must move two spaces diagonally")
+            return False
+
+        # Blocking the elephant's eyes. Checks the four diagonal spaces immediately adjacent to the piece. If the one
+        # in the direction of travel is not empty, the elephant is blocked.  Return False.
+
+        # move down and right
+        if current_row < new_row and current_col < new_col:
+            if board[current_row + 1][current_col + 1] is not None:
+                print("Elephant cannot be blocked")
+                return False
+
+        # move down and left
+        if current_row < new_row and current_col > new_col:
+            if board[current_row + 1][current_col - 1] is not None:
+                print("Elephant cannot be blocked")
+                return False
+
+        # move up and right
+        if current_row > new_row and current_col < new_col:
+            if board[current_row - 1][current_col + 1] is not None:
+                return False
+
+        # move up and left
+        if current_row > new_row and current_col > new_col:
+            if board[current_row - 1][current_col - 1] is not None:
+                return False
+        
+        return True
+
 class Adviser(GamePiece):
     """Creates Adviser sub-class"""
     
@@ -313,9 +353,8 @@ game = XiangqiGame()
 
 
 print(game.make_move("a1", "a2"))
-print(game.make_move("i10", "i9"))
-print(game.make_move('a2','b2'))
-print(game.make_move('i9','h9'))
-print(game.make_move('b1','a3'))
+
+print(game.make_move("g1", "i3"))
+
 
 game.print_board()
