@@ -361,6 +361,27 @@ class General(GamePiece):
         if self.fratricide_check(current_col, current_row, new_col, new_row, board):
             return False
 
+        # Red Palace. For red General, if desired square is not within palace boundaries, return False
+        if self._color == "red":
+            # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) > 3:
+            if new_row > 2 or new_col < 3 or new_col > 5:
+                print("General must stay within the palace")
+                return False
+
+        # Black Palace. For black General, if desired square is not within palace boundaries, return False
+        if self._color == "black":
+            # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) < 8:
+            if new_row < 7 or new_col < 3 or new_col > 5:
+                print("General must stay within the palace")
+                return False
+
+        # Checks to see if move is more than one space orthogonally, if so, return False
+        if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
+            print("General may only move one square at a time")
+            return False
+
+        return True
+
 class Cannon(GamePiece):
     """Creates Cannon sub-class"""
     
@@ -368,6 +389,100 @@ class Cannon(GamePiece):
         
         if self.fratricide_check(current_col, current_row, new_col, new_row, board):
             return False
+
+        moving_piece = board[current_row][current_col]
+        destination = board[new_row][new_col]
+
+        move_delta_vertical = abs(current_row - new_row)
+        move_delta_horizontal = abs(current_col - new_col)
+        diagonal_move = abs(new_row - current_row) != 0 and abs(current_col - new_col) != 0
+        move_lst = []
+
+        # Cannon cannot move diagonally. If desired square is diagonal, return False
+        if diagonal_move:
+            return False
+
+        # Checking for blocks when destination is empty
+        if destination is None:
+
+            for x in range(1, move_delta_vertical):
+                # if we are moving up, check to see if there are any pieces between moving piece and destination
+                if current_row >= new_row:
+                    if board[current_row - x][current_col] is not None:
+                        return False
+
+                # if we are moving down, we make the same check as above, except that we add the values of x to
+                # the y coordinate.
+                else:
+                    if board[current_row + x][current_col] is not None:
+                        return False
+
+            for y in range(1, move_delta_horizontal):
+
+                # if we are moving left, we check the values of y from 1 to the end of the movement delta subtracted
+                # from the x coordinate. If any of them are other than "---", there is a block, return False.
+                if current_col > new_col:
+                    if board[current_row][current_col - y] is not None:
+                        return False
+
+                # if we are moving right, we make the same check as above, except that we add the values of y to the x
+                # coordinate.
+                else:
+                    if board[current_row][current_col + y] is not None:
+                        return False
+
+        # Captures. If the destination square is not empty, check for color, then "screen" requirement.
+        if destination is not None:
+            if moving_piece is not None:
+                # if color of piece at destination is same as moving piece, return False.
+                if moving_piece.get_color() == destination.get_color():
+                    return False
+
+            # if we are moving upwards
+            if current_row > new_row:
+                for x in range(1, move_delta_vertical):
+                    # if there are other pieces in the path to the destination, append them to list
+                    if board[current_row - x][current_col] is not None:
+                        move_lst.append(board[current_row - x][current_col])
+
+                # if list length is not one, necessary "screen" rule fails, return False
+                if len(move_lst) != 1:
+                    return False
+
+            # if we are moving downwards
+            if current_row < new_row:
+                for x in range(1, move_delta_vertical):
+                    # if there are other pieces in the path to the destination, append them to list
+                    if board[current_row + x][current_col] is not None:
+                        move_lst.append(board[current_row + x][current_col])
+
+                # if list length is not one, necessary "screen" rule fails, return False
+                if len(move_lst) != 1:
+                    return False
+
+            # if we are moving left
+            if current_col > new_col:
+                for y in range(1, move_delta_horizontal):
+                    # if there are other pieces in the path to the destination, append them to list
+                    if board[current_row][current_col - y] is not None:
+                        move_lst.append(board[current_row][current_col - y])
+
+                # if list length is not one, necessary "screen" rule fails, return False
+                if len(move_lst) != 1:
+                    return False
+
+            # if we are moving right
+            if current_col < new_col:
+                for y in range(1, move_delta_horizontal):
+                    # if there are other pieces in the path to the destination, append them to list
+                    if board[current_row][current_col + y] is not None:
+                        move_lst.append(board[current_row][current_col + y])
+
+                # if list length is not one, necessary "screen" rule fails, return False
+                if len(move_lst) != 1:
+                    return False
+
+        return True
 
 class Soldier(GamePiece):
     """Creates Soldier sub-class"""
@@ -382,7 +497,7 @@ game = XiangqiGame()
 
 print(game.make_move("a1", "a2"))
 
-
+print(game.make_move('h8', 'e8'))
 
 
 game.print_board()
