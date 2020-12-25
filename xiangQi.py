@@ -325,6 +325,34 @@ class Adviser(GamePiece):
         if self.fratricide_check(current_col, current_row, new_col, new_row, board):
             return False
 
+        diagonal_move = abs(new_col - current_col) != 0 and abs(current_row - new_row) != 0
+
+        # Red Palace. For red Advisor, if desired square is not within palace boundaries, return False
+        if self._color == "red":
+            # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) > 3:
+            if new_row > 2 or new_col < 3 or new_col > 5:
+                print("Adviser must stay within the palace")
+                return False
+
+        # Black Palace. For black Advisor, if desired square is not within palace boundaries, return False
+        if self._color == "black":
+            # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) < 8:
+            if new_row < 7 or new_col < 3 or new_col > 5:
+                print("Adviser must stay within the palace")
+                return False
+
+        # Advisor must move diagonally. If not, return False.
+        if not diagonal_move:
+            print("Adviser must move diagonally")
+            return False
+
+        # if move is greater than one space diagonally, return False
+        if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
+            print("Adviser may only move one square at a time")
+            return False
+
+        return True
+
 class General(GamePiece):
     """Creates General sub-class"""
     
@@ -354,7 +382,7 @@ game = XiangqiGame()
 
 print(game.make_move("a1", "a2"))
 
-print(game.make_move("g1", "i3"))
+
 
 
 game.print_board()
