@@ -492,6 +492,32 @@ class Soldier(GamePiece):
         if self.fratricide_check(current_col, current_row, new_col, new_row, board):
             return False
 
+        # sets variable for backwards move based on color
+        backwards_move = new_row < current_row and self._color == "red" or new_row > current_row and self._color == \
+                         "black"
+
+        # sets variable for diagonal move
+        diagonal_move = abs(new_col - current_col) != 0 and abs(current_row - new_row) != 0
+
+        # If soliders have crossed river 
+        over_river = new_row > 4 and self._color == "red" or new_row < 5 and self._color == "black"
+
+        # backwards and diagonal move always illegal for Soldiers, return False
+        if backwards_move or diagonal_move:
+            return False
+
+        # if piece has crossed river, it gains ability to move one square horizontally
+        if over_river:
+            if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
+                return False
+
+        # if piece has not crossed river, it can only move one square vertically forward.
+        else:
+            if abs(new_row - current_row) > 1 or abs(new_col - current_col) != 0:
+                return False
+
+        return True
+
 game = XiangqiGame()
 
 
@@ -499,5 +525,7 @@ print(game.make_move("a1", "a2"))
 
 print(game.make_move('h8', 'e8'))
 
-
+print(game.make_move('c7', 'c6'))
+print(game.make_move('c6', 'c5'))
+print(game.make_move('c5', 'd5'))
 game.print_board()
