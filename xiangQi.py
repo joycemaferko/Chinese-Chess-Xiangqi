@@ -120,12 +120,6 @@ class XiangqiGame:
         destination = self._board[new_row][new_col]
         player = self.get_player_turn()
 
-        # adding exception for index error to allow for iterating through potential moves
-        # try:
-        #     destination = self._board[new_col][new_row]
-        # except IndexError:
-        #     return False
-
         # Checks to ensure that there is actually a piece on the square to move
         if moving_piece is None:
             return False
@@ -185,6 +179,10 @@ class XiangqiGame:
                 moving_piece.set_location(str_from)
                 return False
 
+        # check for checkmate
+        self.check_for_checkmate(player)
+
+
         # Switch Player Turn
         if self.get_player_turn() == "red":
             self.set_player_turn("black")
@@ -242,6 +240,7 @@ class XiangqiGame:
                     current_row = int(str_from[1:]) - 1
 
                     # mover is red. Check valid moves against black general's position
+                    # If any of red's valid moves can capture the General, black is in check
                     if mover.get_color() == "red":
                         new_col = ord(self.get_black_gen_pos()[0]) - 97
                         new_row = int(self.get_black_gen_pos()[1:]) - 1
@@ -250,9 +249,6 @@ class XiangqiGame:
                             self.set_black_in_check(True)
                             print("Black General in Check")
                             return True
-
-                            
-
 
                     # mover is black. Check valid moves against red general's position
                     else:
@@ -263,16 +259,48 @@ class XiangqiGame:
                             self.set_red_in_check(True)
                             print("Red General in Check")
                             return True
-                        
-                        
-                    
-                    
-
-                
 
 
-
+    def check_for_checkmate(self, player):
+        """Can the color in check get out of it?
+        For all pieces on the board for the team in check, run all possible moves.
+        After each one, run check for check. Still in check?  Keep going. end of 
+        possible moves?  Checkmate.
+        """
+        freedom_moves = []
         
+        if player == "black" and self.is_in_check("red"):
+            for row in self._board:
+                for square in row:
+                    mover = square
+
+                    if mover is not None and mover.get_color() == "red": 
+                        str_from = mover.get_location()
+                        current_col = ord(str_from[0]) - 97
+                        current_row = int(str_from[1:]) - 1
+
+                        for x in range(10):
+                            for y in range(9):
+                                new_row = x
+                                new_col = y
+
+                                if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+                                    # freedom_moves.append(current_col)
+                                    # freedom_moves.append(current_row)
+                                    # freedom_moves.append(new_col)
+                                    # freedom_moves.append(new_row)
+                                    str_from = str(chr(current_col + 97) + str(current_row +1))
+                                    str_to = str(chr(new_col + 97) + str(new_row + 1))
+                                    freedom_moves.append((str_from, str_to))
+
+                                    
+                                    # freedom_moves.append((current_row,current_row)) 
+                                    # freedom_moves.append((new_col,new_row))
+
+            print(freedom_moves)
+
+
+
 
 class GamePiece:
     """Create GamePiece class, which provides general rules for all pieces"""
@@ -307,13 +335,7 @@ class GamePiece:
     def fratricide_check(self, current_col, current_row, new_col, new_row, board):
         """tests move against general rules for all pieces. Returns true if move
         is successful, otherwise false. 
-
-        May take this out if I can just implement in my sub-classes
         """
-        # If there is not actually a piece to move (Don't think I need, as we won't get here unless there's a piece to move)
-        # if board[curr_row][current_col] is None:
-        #     return False
-        
         moving_piece = board[current_row][current_col]
         destination = board[new_row][new_col]
 
@@ -343,16 +365,17 @@ class Chariot(GamePiece):
         # vertical block
         for x in range(1, move_delta_vertical):
 
-            # if we are moving up vertically, then we check the values of x in the range of 1 to the end of the
-            # movement delta subtracted from the y coordinate. If any of them are other than None, there is a block,
+            # if we are moving up vertically, then we check the values of x in 
+            # the range of 1 to the end of the movement delta subtracted from the 
+            # y coordinate. If any of them are other than None, there is a block,
             # so return False.
             if current_row >= new_row:
                 if board[current_row - x][current_col] is not None:
                     #print("vertical block")
                     return False
 
-            # if we are moving down vertically, we make the same check as above, except that we add the values of x to
-            # the y coordinate.
+            # if we are moving down vertically, we make the same check as above, 
+            # except that we add the values of x to the y coordinate.
             else:
                 if board[current_row + x][current_col] is not None:
                     #print("vertical block")
@@ -690,7 +713,11 @@ game = XiangqiGame()
 print(game.make_move('h3','f3'))
 print(game.make_move('h8','f8'))
 print(game.make_move('e1','d2'))
-
+print(game.make_move('f8','e8'))
+print(game.make_move('d2','e2'))
+print(game.make_move('i7','i6'))
+print(game.make_move('f3','e3'))
+print(game.make_move('e8','e4'))
 print(game.get_red_gen_pos())
 print(game.get_black_gen_pos())
 
