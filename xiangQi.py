@@ -41,6 +41,39 @@ class XiangqiGame:
         """sets the color of the player whose turn it is"""
         self._player_turn = color
 
+    def set_black_gen_pos(self, pos):
+        """updates the position of the black general to pos"""
+        self._black_gen_pos = pos
+
+    def get_black_gen_pos(self):
+        """returns black general's location in algebraic notation"""
+        return self._black_gen_pos
+
+    def set_red_gen_pos(self, pos):
+        """updates the position of the red general to pos"""
+        self._red_gen_pos = pos
+
+    def get_red_gen_pos(self):
+        """returns red general's location in algebraic notation"""
+        return self._red_gen_pos
+
+    def set_red_in_check(self, state):
+        """sets True if red in check, Otherwise False"""
+        self._red_in_check = state
+
+    def set_black_in_check(self, state):
+        """sets True if black in check, Otherwise False"""
+        self._black_in_check = state
+
+    def update_general_pos(self, str_from, str_to):
+        """updates general's position on the board"""
+        
+        if str_from == self._black_gen_pos:
+            self.set_black_gen_pos(str_to)
+
+        if str_from == self._red_gen_pos:
+            self.set_red_gen_pos(str_to)
+
     def print_board(self):
         """Prints game board."""
 
@@ -102,6 +135,10 @@ class XiangqiGame:
             return False
 
         self.the_move(str_from, str_to, moving_piece)
+
+        # Track General's position for "in-check"
+        if type(moving_piece) is General:
+            self.update_general_pos(str_from, str_to)
 
         # Switch Player Turn
         if self.get_player_turn() == "red":
@@ -536,17 +573,13 @@ class Soldier(GamePiece):
 game = XiangqiGame()
 
 
-print(game.make_move("a1", "a2"))
 
-print(game.make_move('h8', 'e8'))
+print(game.make_move('e1','e2'))
+print(game.make_move('e10','f9'))
+print(game.make_move('e2','f3'))
+print(game.make_move('f9','f8'))
 
-print(game.make_move('c7', 'c6'))
-print(game.make_move('c6', 'c5'))
-print(game.make_move('c5', 'd5'))
-print(game.make_move('e10', 'f9'))
-print(game.make_move('d10', 'e9'))
-print(game.make_move('c10', 'a8'))
-print(game.make_move('b3', 'b10'))
-
+print(game.get_red_gen_pos())
+print(game.get_black_gen_pos())
 
 game.print_board()
