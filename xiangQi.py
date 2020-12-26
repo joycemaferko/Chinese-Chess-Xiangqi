@@ -117,6 +117,7 @@ class XiangqiGame:
         new_col = ord(str_to[0]) - 97
         new_row = int(str_to[1:]) - 1
         moving_piece = self._board[current_row][current_col]
+        destination = self._board[new_row][new_col]
         player = self.get_player_turn()
 
         # adding exception for index error to allow for iterating through potential moves
@@ -158,7 +159,15 @@ class XiangqiGame:
         # Check if the move has placed General in check. If opposing Gen in check, update check status, return true.
         # if own general, reverse move and display message
         self.check_for_check()
+        if player == "red" and self.is_in_check("red"):
+            #reverse move
+            self.reverse_move(str_from, str_to, moving_piece, destination)
+            return False
 
+        if player == "black" and self.is_in_check("black"):
+            #reverse move
+            self.reverse_move(str_from, str_to, moving_piece, destination)
+            return False
 
         # Switch Player Turn
         if self.get_player_turn() == "red":
@@ -180,11 +189,31 @@ class XiangqiGame:
         self._board[new_row][new_col] = moving_piece
         self._board[current_row][current_col] = None
 
+    def reverse_move(self, str_from, str_to, moving_piece, destination):
+        """reverses a move that put one's own General in check"""
+
+        #Parses string input and matches the string values to the list of lists board.
+        current_col = ord(str_from[0]) - 97
+        current_row = int(str_from[1:]) - 1
+        new_col = ord(str_to[0]) - 97
+        new_row = int(str_to[1:]) - 1
+
+        self._board[new_row][new_col] = destination
+        self._board[current_row][current_col] = moving_piece
+
+
     def check_for_check(self):
         """check potential moves for all pieces of a color, add them to a set.
         If opposing General's position is present in the set, General is in check. 
         Set that color to in-check.
         """
+        # Default to not in check. This condition will be re-evaluated every move
+        self.set_red_in_check(False)
+        self.set_black_in_check(False)
+
+        # is_check_red = 0
+        # is_check_black = 0
+
         # Iterate over all spaces on the board
         for row in self._board:
             for square in row:
@@ -195,13 +224,19 @@ class XiangqiGame:
                     str_from = mover.get_location()
                     current_col = ord(str_from[0]) - 97
                     current_row = int(str_from[1:]) - 1
+
                     # mover is red. Check valid moves against black general's position
                     if mover.get_color() == "red":
                         new_col = ord(self.get_black_gen_pos()[0]) - 97
                         new_row = int(self.get_black_gen_pos()[1:]) - 1
 
                         if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+                            self.set_black_in_check(True)
                             print("Black General in Check")
+                            return True
+
+                            
+
 
                     # mover is black. Check valid moves against red general's position
                     else:
@@ -209,7 +244,10 @@ class XiangqiGame:
                         new_row = int(self.get_red_gen_pos()[1:]) - 1
 
                         if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+                            self.set_red_in_check(True)
                             print("Red General in Check")
+                            return True
+                        
                         
                     
                     
@@ -633,12 +671,8 @@ game = XiangqiGame()
 
 
 # print(game.make_move('e1','e2'))
-
-print(game.make_move("a1","a2"))
-print(game.make_move('b8','e8'))
-print(game.make_move('b3','e3'))
-print(game.make_move('e8','e4'))
-
+# print(game.make_move('b3','e3'))
+# print(game.make_move('e4','f4'))
 
 
 game.print_board()
