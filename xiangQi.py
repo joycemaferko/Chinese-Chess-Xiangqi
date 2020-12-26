@@ -160,14 +160,30 @@ class XiangqiGame:
         # if own general, reverse move and display message
         self.check_for_check()
         if player == "red" and self.is_in_check("red"):
-            #reverse move
-            self.reverse_move(str_from, str_to, moving_piece, destination)
-            return False
+            #reverse move and update General position
+            if type(moving_piece) is General:
+                self.reverse_move(str_from, str_to, moving_piece, destination)
+                moving_piece.set_location(str_from)
+                self.update_general_pos(str_to, str_from)
+                return False
+            else:
+                #reverse move
+                self.reverse_move(str_from, str_to, moving_piece, destination)
+                moving_piece.set_location(str_from)
+                return False
 
         if player == "black" and self.is_in_check("black"):
-            #reverse move
-            self.reverse_move(str_from, str_to, moving_piece, destination)
-            return False
+            #reverse move and update General position
+            if type(moving_piece) is General:
+                self.reverse_move(str_from, str_to, moving_piece, destination)
+                moving_piece.set_location(str_from)
+                self.update_general_pos(str_to, str_from)
+                return False
+            else:
+                #reverse move
+                self.reverse_move(str_from, str_to, moving_piece, destination)
+                moving_piece.set_location(str_from)
+                return False
 
         # Switch Player Turn
         if self.get_player_turn() == "red":
@@ -670,9 +686,13 @@ game = XiangqiGame()
 
 
 
-# print(game.make_move('e1','e2'))
-# print(game.make_move('b3','e3'))
-# print(game.make_move('e4','f4'))
+
+print(game.make_move('h3','f3'))
+print(game.make_move('h8','f8'))
+print(game.make_move('e1','d2'))
+
+print(game.get_red_gen_pos())
+print(game.get_black_gen_pos())
 
 
 game.print_board()
