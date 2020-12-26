@@ -93,7 +93,18 @@ class XiangqiGame:
 
     def is_in_check(self, color):
         """Returns True if given color is in check, otherwise returns False"""
-        pass
+
+        # returns True if black is in check, otherwise returns False
+        if color == "black":
+            if self._black_in_check is True:
+                return True
+            return False
+
+        # returns True if red is in check, otherwise returns False
+        if color == "red":
+            if self._red_in_check is True:
+                return True
+            return False
 
     def make_move(self, str_from, str_to):
         """
@@ -127,18 +138,27 @@ class XiangqiGame:
             return False
 
         #Checks to ensure players are moving in turn
-        # if moving_piece.get_color() != player:
-        #     return False
+        if moving_piece.get_color() != player:
+            print("It's the other player's turn!")
+            return False
 
         # returns False if the move fails validity checks for the piece in question
         if not moving_piece.is_valid_move(current_col, current_row, new_col, new_row, self._board):
             return False
 
+        # make the move
         self.the_move(str_from, str_to, moving_piece)
+        # update the location for the piece
+        moving_piece.set_location(str_to)
 
         # Track General's position for "in-check"
         if type(moving_piece) is General:
             self.update_general_pos(str_from, str_to)
+
+        # Check if the move has placed General in check. If opposing Gen in check, update check status, return true.
+        # if own general, reverse move and display message
+        self.check_for_check()
+
 
         # Switch Player Turn
         if self.get_player_turn() == "red":
@@ -156,10 +176,48 @@ class XiangqiGame:
         current_row = int(str_from[1:]) - 1
         new_col = ord(str_to[0]) - 97
         new_row = int(str_to[1:]) - 1
-        # moving_piece = self._board[current_col][current_row]
 
         self._board[new_row][new_col] = moving_piece
         self._board[current_row][current_col] = None
+
+    def check_for_check(self):
+        """check potential moves for all pieces of a color, add them to a set.
+        If opposing General's position is present in the set, General is in check. 
+        Set that color to in-check.
+        """
+        # Iterate over all spaces on the board
+        for row in self._board:
+            for square in row:
+                mover = square
+
+                if mover is not None:
+                    # print(mover.get_location())
+                    str_from = mover.get_location()
+                    current_col = ord(str_from[0]) - 97
+                    current_row = int(str_from[1:]) - 1
+                    # mover is red. Check valid moves against black general's position
+                    if mover.get_color() == "red":
+                        new_col = ord(self.get_black_gen_pos()[0]) - 97
+                        new_row = int(self.get_black_gen_pos()[1:]) - 1
+
+                        if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+                            print("Black General in Check")
+
+                    # mover is black. Check valid moves against red general's position
+                    else:
+                        new_col = ord(self.get_red_gen_pos()[0]) - 97
+                        new_row = int(self.get_red_gen_pos()[1:]) - 1
+
+                        if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
+                            print("Red General in Check")
+                        
+                    
+                    
+
+                
+
+
+
         
 
 class GamePiece:
@@ -187,10 +245,10 @@ class GamePiece:
 
         return self._location
 
-    def set_location(self, location):
+    def set_location(self, new_location):
         """updates location of game piece"""
 
-        self._location = location
+        self._location = new_location
 
     def fratricide_check(self, current_col, current_row, new_col, new_row, board):
         """tests move against general rules for all pieces. Returns true if move
@@ -208,7 +266,7 @@ class GamePiece:
         # Prevents fratricide
         if destination is not None:
             if moving_piece.get_color() == destination.get_color():
-                print("fratricide")
+                #print("fratricide")
                 return True
         
 class Chariot(GamePiece):
@@ -236,14 +294,14 @@ class Chariot(GamePiece):
             # so return False.
             if current_row >= new_row:
                 if board[current_row - x][current_col] is not None:
-                    print("vertical block")
+                    #print("vertical block")
                     return False
 
             # if we are moving down vertically, we make the same check as above, except that we add the values of x to
             # the y coordinate.
             else:
                 if board[current_row + x][current_col] is not None:
-                    print("vertical block")
+                    #print("vertical block")
                     return False
 
         # horizontal block
@@ -253,14 +311,14 @@ class Chariot(GamePiece):
             # the x coordinate. If any of them are other than None, there is a block, return False.
             if current_col > new_col:
                 if board[current_row][current_col - y] is not None:
-                    print("horizontal block")
+                    #print("horizontal block")
                     return False
 
             # if we are moving right, we make the same check as above, except that we add the values of y to the x
             # coordinate.
             else:
                 if board[current_row][current_col + y] is not None:
-                    print("horizontal block")
+                    #print("horizontal block")
                     return False
 
         return True
@@ -288,24 +346,24 @@ class Horse(GamePiece):
             # first square move up
             if current_row > new_row:
                 if board[current_row - 1][current_col] is not None:
-                    print("horse block")
+                    #print("horse block")
                     return False
             # first square move down
             if current_row < new_row:
                 if board[current_row + 1][current_col] is not None:
-                    print("horse block")
+                    #print("horse block")
                     return False
 
         if abs(new_row - current_row) == 1:
             # first square move left
             if current_col > new_col:
                 if board[current_row][current_col - 1] is not None:
-                    print("horse block")
+                    #print("horse block")
                     return False
             # first square move right
             if current_col < new_col:
                 if board[current_row][current_col + 1] is not None:
-                    print("horse block")
+                    #print("horse block")
                     return False
 
         return True
@@ -323,12 +381,12 @@ class Elephant(GamePiece):
 
         # Elephant cannot cross river. If desired square is over river, return False
         if over_river:
-            print("Elephant cannot cross river")
+            #print("Elephant cannot cross river")
             return False
 
         #Elephant can only move two squares diagonally. Otherwise return False.
         if not elephant_diagonal_move:
-            print("Elephant must move two spaces diagonally")
+            #print("Elephant must move two spaces diagonally")
             return False
 
         # Blocking the elephant's eyes. Checks the four diagonal spaces immediately adjacent to the piece. If the one
@@ -337,13 +395,13 @@ class Elephant(GamePiece):
         # move down and right
         if current_row < new_row and current_col < new_col:
             if board[current_row + 1][current_col + 1] is not None:
-                print("Elephant cannot be blocked")
+                #print("Elephant cannot be blocked")
                 return False
 
         # move down and left
         if current_row < new_row and current_col > new_col:
             if board[current_row + 1][current_col - 1] is not None:
-                print("Elephant cannot be blocked")
+                #print("Elephant cannot be blocked")
                 return False
 
         # move up and right
@@ -372,24 +430,24 @@ class Adviser(GamePiece):
         if self._color == "red":
             # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) > 3:
             if new_row > 2 or new_col < 3 or new_col > 5:
-                print("Adviser must stay within the palace")
+                #print("Adviser must stay within the palace")
                 return False
 
         # Black Palace. For black Advisor, if desired square is not within palace boundaries, return False
         if self._color == "black":
             # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) < 8:
             if new_row < 7 or new_col < 3 or new_col > 5:
-                print("Adviser must stay within the palace")
+                #print("Adviser must stay within the palace")
                 return False
 
         # Advisor must move diagonally. If not, return False.
         if not diagonal_move:
-            print("Adviser must move diagonally")
+            #print("Adviser must move diagonally")
             return False
 
         # if move is greater than one space diagonally, return False
         if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
-            print("Adviser may only move one square at a time")
+            #print("Adviser may only move one square at a time")
             return False
 
         return True
@@ -406,19 +464,19 @@ class General(GamePiece):
         if self._color == "red":
             # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) > 3:
             if new_row > 2 or new_col < 3 or new_col > 5:
-                print("General must stay within the palace")
+                #print("General must stay within the palace")
                 return False
 
         # Black Palace. For black General, if desired square is not within palace boundaries, return False
         if self._color == "black":
             # if (ord(sq_to[0]) - 97) < 3 or (ord(sq_to[0]) - 97) > 5 or int(sq_to[1:]) < 8:
             if new_row < 7 or new_col < 3 or new_col > 5:
-                print("General must stay within the palace")
+                #print("General must stay within the palace")
                 return False
 
         # Checks to see if move is more than one space orthogonally, if so, return False
         if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
-            print("General may only move one square at a time")
+            #print("General may only move one square at a time")
             return False
 
         return True
@@ -450,14 +508,14 @@ class Cannon(GamePiece):
                 # if we are moving up, check to see if there are any pieces between moving piece and destination
                 if current_row >= new_row:
                     if board[current_row - x][current_col] is not None:
-                        print("Cannon is blocked")
+                        #print("Cannon is blocked")
                         return False
 
                 # if we are moving down, we make the same check as above, except that we add the values of x to
                 # the y coordinate.
                 else:
                     if board[current_row + x][current_col] is not None:
-                        print("Cannon is blocked")
+                        #print("Cannon is blocked")
                         return False
 
             for y in range(1, move_delta_horizontal):
@@ -466,14 +524,14 @@ class Cannon(GamePiece):
                 # from the x coordinate. If any of them are other than "---", there is a block, return False.
                 if current_col > new_col:
                     if board[current_row][current_col - y] is not None:
-                        print("Cannon is blocked")
+                        #print("Cannon is blocked")
                         return False
 
                 # if we are moving right, we make the same check as above, except that we add the values of y to the x
                 # coordinate.
                 else:
                     if board[current_row][current_col + y] is not None:
-                        print("Cannon is blocked")
+                        #print("Cannon is blocked")
                         return False
 
         # Captures. If the destination square is not empty, check for color, then "screen" requirement.
@@ -492,7 +550,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
-                    print("Cannon must have a screen to capture")
+                    #print("Cannon must have a screen to capture")
                     return False
 
             # if we are moving downwards
@@ -504,7 +562,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
-                    print("Cannon must have a screen to capture")
+                    #print("Cannon must have a screen to capture")
                     return False
 
             # if we are moving left
@@ -516,7 +574,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
-                    print("Cannon must have a screen to capture")
+                    #print("Cannon must have a screen to capture")
                     return False
 
             # if we are moving right
@@ -528,7 +586,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
-                    print("Cannon must have a screen to capture")
+                    #print("Cannon must have a screen to capture")
                     return False
 
         return True
@@ -553,19 +611,19 @@ class Soldier(GamePiece):
 
         # backwards and diagonal move always illegal for Soldiers, return False
         if backwards_move or diagonal_move:
-            print("Soldier can never move backwards or diagonally")
+            #print("Soldier can never move backwards or diagonally")
             return False
 
         # if piece has crossed river, it gains ability to move one square horizontally
         if over_river:
             if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
-                print("Soldier may only move one square at a time")
+                #print("Soldier may only move one square at a time")
                 return False
 
         # if piece has not crossed river, it can only move one square vertically forward.
         else:
             if abs(new_row - current_row) > 1 or abs(new_col - current_col) != 0:
-                print("Soldier may only move one square at a time")
+                #print("Soldier may only move one square at a time")
                 return False
 
         return True
@@ -574,12 +632,13 @@ game = XiangqiGame()
 
 
 
-print(game.make_move('e1','e2'))
-print(game.make_move('e10','f9'))
-print(game.make_move('e2','f3'))
-print(game.make_move('f9','f8'))
+# print(game.make_move('e1','e2'))
 
-print(game.get_red_gen_pos())
-print(game.get_black_gen_pos())
+print(game.make_move("a1","a2"))
+print(game.make_move('b8','e8'))
+print(game.make_move('b3','e3'))
+print(game.make_move('e8','e4'))
+
+
 
 game.print_board()
