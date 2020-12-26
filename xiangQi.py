@@ -10,6 +10,10 @@ class XiangqiGame:
 
         self._game_state = "UNFINISHED"
         self._player_turn = "red"
+        self._black_gen_pos = "e10"
+        self._red_gen_pos = "e1"
+        self._black_in_check = False
+        self._red_in_check = False
         self._board = [
             [Chariot("red", "a1", "r R"), Horse("red", "b1", "r H"), Elephant("red", "c1", "r E"), Adviser("red", "d1", "r A"),
                  General("red", "e1", "r G"), Adviser("red", "f1", "r A"), Elephant("red", "g1", "r E"), Horse("red", "h1", "r H"),
@@ -191,7 +195,7 @@ class Chariot(GamePiece):
         for x in range(1, move_delta_vertical):
 
             # if we are moving up vertically, then we check the values of x in the range of 1 to the end of the
-            # movement delta subtracted from the y coordinate. If any of them are other than "---", there is a block,
+            # movement delta subtracted from the y coordinate. If any of them are other than None, there is a block,
             # so return False.
             if current_row >= new_row:
                 if board[current_row - x][current_col] is not None:
@@ -209,7 +213,7 @@ class Chariot(GamePiece):
         for y in range(1, move_delta_horizontal):
 
             # if we are moving left, we check the values of y from 1 to the end of the movement delta subtracted from
-            # the x coordinate. If any of them are other than "---", there is a block, return False.
+            # the x coordinate. If any of them are other than None, there is a block, return False.
             if current_col > new_col:
                 if board[current_row][current_col - y] is not None:
                     print("horizontal block")
@@ -409,12 +413,14 @@ class Cannon(GamePiece):
                 # if we are moving up, check to see if there are any pieces between moving piece and destination
                 if current_row >= new_row:
                     if board[current_row - x][current_col] is not None:
+                        print("Cannon is blocked")
                         return False
 
                 # if we are moving down, we make the same check as above, except that we add the values of x to
                 # the y coordinate.
                 else:
                     if board[current_row + x][current_col] is not None:
+                        print("Cannon is blocked")
                         return False
 
             for y in range(1, move_delta_horizontal):
@@ -423,20 +429,22 @@ class Cannon(GamePiece):
                 # from the x coordinate. If any of them are other than "---", there is a block, return False.
                 if current_col > new_col:
                     if board[current_row][current_col - y] is not None:
+                        print("Cannon is blocked")
                         return False
 
                 # if we are moving right, we make the same check as above, except that we add the values of y to the x
                 # coordinate.
                 else:
                     if board[current_row][current_col + y] is not None:
+                        print("Cannon is blocked")
                         return False
 
         # Captures. If the destination square is not empty, check for color, then "screen" requirement.
         if destination is not None:
-            if moving_piece is not None:
-                # if color of piece at destination is same as moving piece, return False.
-                if moving_piece.get_color() == destination.get_color():
-                    return False
+            # if moving_piece is not None:
+            #     # if color of piece at destination is same as moving piece, return False.
+            #     if moving_piece.get_color() == destination.get_color():
+            #         return False
 
             # if we are moving upwards
             if current_row > new_row:
@@ -447,6 +455,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
+                    print("Cannon must have a screen to capture")
                     return False
 
             # if we are moving downwards
@@ -458,6 +467,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
+                    print("Cannon must have a screen to capture")
                     return False
 
             # if we are moving left
@@ -469,6 +479,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
+                    print("Cannon must have a screen to capture")
                     return False
 
             # if we are moving right
@@ -480,6 +491,7 @@ class Cannon(GamePiece):
 
                 # if list length is not one, necessary "screen" rule fails, return False
                 if len(move_lst) != 1:
+                    print("Cannon must have a screen to capture")
                     return False
 
         return True
@@ -504,16 +516,19 @@ class Soldier(GamePiece):
 
         # backwards and diagonal move always illegal for Soldiers, return False
         if backwards_move or diagonal_move:
+            print("Soldier can never move backwards or diagonally")
             return False
 
         # if piece has crossed river, it gains ability to move one square horizontally
         if over_river:
             if abs(new_row - current_row) > 1 or abs(new_col - current_col) > 1:
+                print("Soldier may only move one square at a time")
                 return False
 
         # if piece has not crossed river, it can only move one square vertically forward.
         else:
             if abs(new_row - current_row) > 1 or abs(new_col - current_col) != 0:
+                print("Soldier may only move one square at a time")
                 return False
 
         return True
@@ -528,4 +543,10 @@ print(game.make_move('h8', 'e8'))
 print(game.make_move('c7', 'c6'))
 print(game.make_move('c6', 'c5'))
 print(game.make_move('c5', 'd5'))
+print(game.make_move('e10', 'f9'))
+print(game.make_move('d10', 'e9'))
+print(game.make_move('c10', 'a8'))
+print(game.make_move('b3', 'b10'))
+
+
 game.print_board()
