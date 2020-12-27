@@ -94,7 +94,7 @@ class XiangqiGame:
             return "┃" + "│".join(f" {repr(GamePiece)} " if GamePiece else "     " for GamePiece in row) + "┃"
 
         top_mid = f"\n{sep}\n".join(r(self._board[i]) + " " + str(i + 1) for i in range(5))
-        river = f"{bot}\n\033[0;34m░░░░░░░░░░░░░░░░░░░░░░░░░River░░░░░░░░░░░░░░░░░░░░░░░░░\033[0m\n{top}"
+        river = f"{bot}\n\033[0;34m░░░░░░░░░░\u695A\u6CB3░░░░░░░░░░░River░░░░░░░░░░\u6F22\u754C░░░░░░░░░░░░\033[0m\n{top}"
         bot_mid = f"\n{sep}\n".join(r(self._board[i]) + " " + str(i + 1) for i in range(5, 10))
 
         print(f"{columns}\n{top}\n{top_mid}\n{river}\n{bot_mid}\n{bot}\n{columns}")
@@ -875,6 +875,31 @@ game = XiangqiGame()
 # print(game.make_move('i8','i9'))
 # print(game.make_move('b8','e8')) #CM?
 
+#RED CM
+# game.make_move('a1','a2')
+# game.make_move('a7','a6')
+# game.make_move('i1','i2')
+# game.make_move('i7','i6')
+# game.make_move('a2','d2')
+# game.make_move('g7','g6')
+# game.make_move('i2','f2')
+# game.make_move('a6','a5')
+# game.make_move('e4','e5')
+# game.make_move('a5','a4')
+# game.make_move('b3','e3')
+# game.make_move('a4','a3')
+# game.make_move('e3','e7')
+# game.make_move('i6','i5')
+# game.make_move('e5','e6')
+# game.make_move('i5','i4')
+# game.make_move('a2','d2')
+# game.make_move('e6','f6')
+# game.make_move('i4','i3')
+# game.make_move('f6','g6')
+# game.make_move('i3','i2')
+# game.make_move('h3','e3') #CM?
+
+print(game.get_player_turn())
 print(game.get_game_state())
 
 
