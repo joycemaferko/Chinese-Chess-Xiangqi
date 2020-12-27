@@ -92,6 +92,7 @@ class XiangqiGame:
 
         def r(row):
             return "┃" + "│".join(f" {repr(GamePiece)} " if GamePiece else "     " for GamePiece in row) + "┃"
+            
 
         top_mid = f"\n{sep}\n".join(r(self._board[i]) + " " + str(i + 1) for i in range(5))
         river = f"{bot}\n\033[0;34m░░░░░░░░░░\u695A\u6CB3░░░░░░░░░░░River░░░░░░░░░░\u6F22\u754C░░░░░░░░░░░░\033[0m\n{top}"
@@ -189,7 +190,6 @@ class XiangqiGame:
 
         # check for checkmate
         self.check_for_checkmate(player)
-
 
         # Switch Player Turn
         if self.get_player_turn() == "red":
@@ -434,8 +434,12 @@ class GamePiece:
 
     def __repr__(self):
         """returns easily identifiable representation of piece object on board"""
+        
+        if self._color == "red":
+            return f"\u001b[31m{self._piece_id}\u001b[0m"
 
-        return self._piece_id
+        else:
+            return f"\u001b[30;1m{self._piece_id}\u001b[0m"
 
     def get_color(self):
         """returns value of color"""
