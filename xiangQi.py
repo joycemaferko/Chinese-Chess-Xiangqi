@@ -32,6 +32,14 @@ class XiangqiGame:
                  General("black", "e10","b G"), Adviser("black", "f10","b A"), Elephant("black", "g10","b E"), Horse("black", "h10","b H"),
                  Chariot("black", "i10","b R")]
         ]
+    
+    def get_game_state(self):
+        """Returns current value of game state: Either Unfinished, Black Won, or Red Won"""
+        return self._game_state
+
+    def set_game_state(self, state):
+        """sets game state"""
+        self._game_state = state
 
     def get_player_turn(self):
         """returns the color of player whose turn it is"""
@@ -247,7 +255,7 @@ class XiangqiGame:
 
                         if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
                             self.set_black_in_check(True)
-                            print("Black General in Check")
+                            #print("Black General in Check")
                             return True
 
                     # mover is black. Check valid moves against red general's position
@@ -257,7 +265,7 @@ class XiangqiGame:
 
                         if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
                             self.set_red_in_check(True)
-                            print("Red General in Check")
+                            #print("Red General in Check")
                             return True
 
 
@@ -267,7 +275,7 @@ class XiangqiGame:
         After each one, run check for check. Still in check?  Keep going. end of 
         possible moves?  Checkmate.
         """
-        freedom_moves = []
+        possible_moves = []
         
         if player == "black" and self.is_in_check("red"):
             for row in self._board:
@@ -285,22 +293,134 @@ class XiangqiGame:
                                 new_col = y
 
                                 if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
-                                    # freedom_moves.append(current_col)
-                                    # freedom_moves.append(current_row)
-                                    # freedom_moves.append(new_col)
-                                    # freedom_moves.append(new_row)
+                                    
                                     str_from = str(chr(current_col + 97) + str(current_row +1))
                                     str_to = str(chr(new_col + 97) + str(new_row + 1))
-                                    freedom_moves.append((str_from, str_to))
+                                    possible_moves.append((str_from, str_to))
 
+            count = 0
+
+            for str_from, str_to in possible_moves:
+
+                current_col = ord(str_from[0]) - 97
+                current_row = int(str_from[1:]) - 1
+                new_col = ord(str_to[0]) - 97
+                new_row = int(str_to[1:]) - 1
+                
+                mover = self._board[current_row][current_col]
+                destination = self._board[new_row][new_col]
+
+                # test the move to see if it will bring color out of check
+                self.the_move(str_from, str_to, mover)
+                mover.set_location(str_to)
+
+                if type(mover) is General:
+                    self.update_general_pos(str_from, str_to)
+
+                self.check_for_check()
+                if self.is_in_check("red"):
+                    #reverse move and update General position
+                    if type(mover) is General:
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        self.update_general_pos(str_to, str_from)
+                        continue
+                    else:
+                        #reverse move
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        continue
+
+                if self.is_in_check("red") == False:
+                    count += 1
+                    #reverse move and update General position
+                    if type(mover) is General:
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        self.update_general_pos(str_to, str_from)
+                        return False
+                    else:
+                        #reverse move
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        return False
+
+            if count == 0:
+                print("Checkmate!")
+                self.set_game_state("BLACK_WON")
+
+
+        if player == "red" and self.is_in_check("black"):
+            for row in self._board:
+                for square in row:
+                    mover = square
+
+                    if mover is not None and mover.get_color() == "black": 
+                        str_from = mover.get_location()
+                        current_col = ord(str_from[0]) - 97
+                        current_row = int(str_from[1:]) - 1
+
+                        for x in range(10):
+                            for y in range(9):
+                                new_row = x
+                                new_col = y
+
+                                if mover.is_valid_move(current_col, current_row, new_col, new_row, self._board):
                                     
-                                    # freedom_moves.append((current_row,current_row)) 
-                                    # freedom_moves.append((new_col,new_row))
+                                    str_from = str(chr(current_col + 97) + str(current_row +1))
+                                    str_to = str(chr(new_col + 97) + str(new_row + 1))
+                                    possible_moves.append((str_from, str_to))
 
-            print(freedom_moves)
+            count = 0
 
+            for str_from, str_to in possible_moves:
 
+                current_col = ord(str_from[0]) - 97
+                current_row = int(str_from[1:]) - 1
+                new_col = ord(str_to[0]) - 97
+                new_row = int(str_to[1:]) - 1
+                
+                mover = self._board[current_row][current_col]
+                destination = self._board[new_row][new_col]
 
+                # test the move to see if it will bring color out of check
+                self.the_move(str_from, str_to, mover)
+                mover.set_location(str_to)
+
+                if type(mover) is General:
+                    self.update_general_pos(str_from, str_to)
+
+                self.check_for_check()
+                if self.is_in_check("black"):
+                    #reverse move and update General position
+                    if type(mover) is General:
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        self.update_general_pos(str_to, str_from)
+                        continue
+                    else:
+                        #reverse move
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        continue
+
+                if self.is_in_check("black") == False:
+                    count += 1
+                    #reverse move and update General position
+                    if type(mover) is General:
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        self.update_general_pos(str_to, str_from)
+                        return False
+                    else:
+                        #reverse move
+                        self.reverse_move(str_from, str_to, mover, destination)
+                        mover.set_location(str_from)
+                        return False
+
+            if count == 0:
+                print("Checkmate!")
+                self.set_game_state("RED_WON")
 
 class GamePiece:
     """Create GamePiece class, which provides general rules for all pieces"""
@@ -709,17 +829,54 @@ game = XiangqiGame()
 
 
 
+# BLACK WINS
+# print(game.make_move('h3','f3'))
+# print(game.make_move('h8','f8'))
+# print(game.make_move('e1','d2'))
+# print(game.make_move('f8','e8'))
+# print(game.make_move('d2','e2'))
+# print(game.make_move('i7','i6'))
+# print(game.make_move('f3','e3'))
+# print(game.make_move('e8','e4'))
+# print(game.make_move('e3','e7'))
+# print(game.make_move('a10','a9'))
+# print(game.make_move('e7','a7'))
+# print(game.make_move('a9','d9'))
+# print(game.make_move('e2','e1'))
+# print(game.make_move('d9','d1'))
+# print(game.make_move('e1','e2'))
+# print(game.make_move('i10','i9'))
+# print(game.make_move('i4','i5'))
+# print(game.make_move('i9','h9'))
+# print(game.make_move('i5','i6'))
+# print(game.make_move('h9','h1'))
+# print(game.make_move('i6','h6'))
+# print(game.make_move('h1','i1'))
+# print(game.make_move('h6','g6'))
+# print(game.make_move('d1','c1'))
+# print(game.make_move('g6','g7'))
+# print(game.make_move('i1','g1'))
+# print(game.make_move('g7','g8'))
+# print(game.make_move('g1','f1'))
+# print(game.make_move('a4','a5'))
+# print(game.make_move('c1','b1'))
+# print(game.make_move('a5','a6'))
+# print(game.make_move('b1','a1'))
+# print(game.make_move('g4','g5'))
+# print(game.make_move('a1','a3'))
+# print(game.make_move('g5','g6'))
+# print(game.make_move('a3','b3'))
+# print(game.make_move('g6','g7'))
+# print(game.make_move('b3','d3'))
+# print(game.make_move('g8','h8'))
+# print(game.make_move('d3','d4'))
+# print(game.make_move('h8','i8'))
+# print(game.make_move('f1','f4'))
+# print(game.make_move('i8','i9'))
+# print(game.make_move('b8','e8')) #CM?
 
-print(game.make_move('h3','f3'))
-print(game.make_move('h8','f8'))
-print(game.make_move('e1','d2'))
-print(game.make_move('f8','e8'))
-print(game.make_move('d2','e2'))
-print(game.make_move('i7','i6'))
-print(game.make_move('f3','e3'))
-print(game.make_move('e8','e4'))
-print(game.get_red_gen_pos())
-print(game.get_black_gen_pos())
+print(game.get_game_state())
+
 
 
 game.print_board()
