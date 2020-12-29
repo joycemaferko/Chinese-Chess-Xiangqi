@@ -1,6 +1,6 @@
 # Author: Matthew Joyce
 # Date: 12/23/2020
-# Description: Implemenation of Xiangqi in Python. Add Hanzi for River and pieces
+# Description: Implemenation of Xiangqi in Python.
 
 class XiangqiGame: 
     """Create XQ Game class, which sets the board and controls game state"""
@@ -82,23 +82,24 @@ class XiangqiGame:
         if str_from == self._red_gen_pos:
             self.set_red_gen_pos(str_to)
 
+
     def print_board(self):
         """Prints game board."""
 
         columns = "   a     b     c     d     e     f     g     h     i"
-        top = "┏━" + ''.join("━━━━┯━" for _ in range(8)) + '━━━━┓'
-        bot = "┗━" + ''.join("━━━━┷━" for _ in range(8)) + '━━━━┛'
-        sep = "┠─" + ''.join("────┼─" for _ in range(8)) + '────┨'
+        top = "\u250F" + "\u2501" + ''.join("━━━━┯━" for x in range(8)) + ("\u2501" *4) + "\u2513"
+        bot = "\u2517" + "\u2501" + ''.join("━━━━┷━" for x in range(8)) + ("\u2501" *4) + "\u251B"
+        sep = "\u2520" + "\u2500" + ''.join("────┼─" for x in range(8)) + ("\u2500" * 4) + "\u2528"
 
         def r(row):
-            return "┃" + "│".join(f" {repr(GamePiece)} " if GamePiece else "     " for GamePiece in row) + "┃"
-            
+            return "\u2503" + "\u2502".join(f" {repr(GamePiece)} " if GamePiece else "     " for GamePiece in row) + "\u2503"
 
         top_mid = f"\n{sep}\n".join(r(self._board[i]) + " " + str(i + 1) for i in range(5))
         river = f"{bot}\n\033[0;34m░░░░░░░░░░\u695A\u6CB3░░░░░░░░░░░River░░░░░░░░░░\u6F22\u754C░░░░░░░░░░░░\033[0m\n{top}"
         bot_mid = f"\n{sep}\n".join(r(self._board[i]) + " " + str(i + 1) for i in range(5, 10))
 
         print(f"{columns}\n{top}\n{top_mid}\n{river}\n{bot_mid}\n{bot}\n{columns}")
+
 
     def is_in_check(self, color):
         """Returns True if given color is in check, otherwise returns False"""
@@ -463,7 +464,7 @@ class GamePiece:
         if self._color == "red":
             return f"\u001b[31m{self._piece_id}\u001b[0m"
 
-        else:
+        if self._color == "black":
             return f"\u001b[30;1m{self._piece_id}\u001b[0m"
 
     def get_color(self):
