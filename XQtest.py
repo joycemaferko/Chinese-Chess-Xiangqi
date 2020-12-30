@@ -119,7 +119,7 @@ class xiangQi_test(unittest.TestCase):
         self.assertFalse(move)
 
     def test_elephant(self):
-        """Tests movement of general gamepiece"""
+        """Tests movement of elephant gamepiece"""
 
         game4 = XiangqiGame()
 
@@ -178,9 +178,171 @@ class xiangQi_test(unittest.TestCase):
         game4.make_move('e2','e3')
         move = game4.make_move('g6','i4')
         self.assertFalse(move)
-       
 
+        # Invalid move (elephant cannot cross river)
+        game4.make_move('h8','h7')
+        game4.make_move('c1', 'a3')
+        game4.make_move('h7','h6')
+        game4.make_move('a3','c5')
+        game4.make_move('h6','h5')
+        move = game4.make_move('c5','a7')
+        self.assertFalse(move)
+
+       
+    def test_horse(self):
+        """Tests movement of horse gamepiece"""
+
+        game5 = XiangqiGame()
+
+        # Valid move down/left
+        move = game5.make_move('h1','g3')
+        self.assertTrue(move)
+
+        # Valid move up/left
+        move = game5.make_move('h10','g8')
+        self.assertTrue(move)
+
+        # Valid move down/right
+        move = game5.make_move('b1','c3')
+        self.assertTrue(move)
+
+        # Valid move up/right
+        move = game5.make_move('b10','c8')
+        self.assertTrue(move)
+
+        # Invalid move (blocked)
+        move = game5.make_move('g3','h5')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        move = game5.make_move('c3','b5')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        game5.make_move('c3','b1')
+        move = game5.make_move('g8','f6')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        move = game5.make_move('c8','b6')
+        self.assertFalse(move)
+
+        # Valid move (capture)
+        game6 = XiangqiGame()
+        game6.make_move('i1','i2')
+        game6.make_move('h8','f8')
+        game6.make_move('i2','i3')
+        game6.make_move('f8','f3')
+        game6.make_move('i4','i5')
+        game6.make_move('f3','g3')
+        move = game6.make_move('h1','g3')
+        piece = game6._board[2][6]
+        self.assertTrue(move)
+        self.assertEqual(repr(piece), "\u001b[31mr H\u001b[0m")
+
+    def test_chariot(self):
+        """Tests movement of horse gamepiece"""
+
+        game7 = XiangqiGame()
+
+        # Valid move down
+        move = game7.make_move('i1','i2')
+        self.assertTrue(move)
+
+        # Valid move up
+        move = game7.make_move('a10','a9')
+        self.assertTrue(move)
+
+        # Valid move left
+        move = game7.make_move('i2','f2')
+        self.assertTrue(move)
+
+        # Valid move right
+        move = game7.make_move('a9','d9')
+        self.assertTrue(move)
+
+        # Valid move (capture)
+        game7.make_move('f2','f7')
+        game7.make_move('d9','d8')
+        move = game7.make_move('f7', 'g7')
+        piece = game7._board[6][6]
+        self.assertTrue(move)
+        self.assertEqual(repr(piece), "\u001b[31mr R\u001b[0m")
         
+        game8 = XiangqiGame()
+
+        # Invalid move (blocked)
+        move = game8.make_move('i1','i5')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        game8.make_move('i1','i2')
+        move = game8.make_move('a10','a6')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        game8.make_move('a10','a8')
+        game8.make_move('i4','i5')
+        move = game8.make_move('a8','c8')
+        self.assertFalse(move)
+
+    def test_cannon(self):
+        """Tests movement of cannon gamepiece"""
+
+        game9 = XiangqiGame()
+
+        # Valid move down
+        move = game9.make_move('h3','h5')
+        self.assertTrue(move)
+
+        # Valid move up
+        move = game9.make_move('b8','b6')
+        self.assertTrue(move)
+
+        # Valid move left
+        move = game9.make_move('h5','f5')
+        self.assertTrue(move)
+
+        # Valid move right
+        move = game9.make_move('h8','i8')
+        self.assertTrue(move)
+
+        # Valid move (capture)
+        move = game9.make_move('b3','b10')
+        piece = game9._board[9][1]
+        self.assertTrue(move)
+        self.assertEqual(repr(piece), "\u001b[31mr C\u001b[0m")
+
+        # Invalid move (diagonal)
+        move = game9.make_move('i8','h9')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        move = game9.make_move('i8','i6')
+        self.assertFalse(move)
+
+        # Invalid move (illegal capture)
+        move = game9.make_move('i8','i1')
+        self.assertFalse(move)
+
+        # Invalid move (blocked)
+        game9.make_move('g10','e8')
+        game9.make_move('e4','e5')
+        move = game9.make_move('i8','d8')
+        self.assertFalse(move)
+
+    def test_check(self):
+        """Tests whether color is in check"""
+
+        game10 = XiangqiGame()
+
+        # Black is in Check
+        game10.make_move('h3','h5')
+        game10.make_move('i7','i6')
+        game10.make_move('h5','e5')
+        status = game10.is_in_check("black")
+        self.assertTrue(status)
+
 
 if __name__ == '__main__':    
     unittest.main()

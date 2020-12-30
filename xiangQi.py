@@ -84,6 +84,25 @@ class XiangqiGame:
         if str_from == self._red_gen_pos:
             self.set_red_gen_pos(str_to)
 
+    # def print_board(self):
+    #     empty = "     "
+    #     dashes = "  ----"
+    #     row_num = 1
+    #     columns = ['a','b','c','d','e','f','g','h','i']
+    #     river = f"\033[0;34m░░░░░░░░░░\u695A\u6CB3░░░░░░░░░░░River░░░░░░░░░░\u6F22\u754C░░░░░░░░░░░░\033[0m"
+    #     print(dashes * 9)
+
+    #     for row in self._board:
+    #         print("|" + "|".join(f" {repr(GamePiece)} " if GamePiece else empty \
+    #             for GamePiece in row) + "|" + " " + str(row_num))
+    #         row_num += 1
+    #         print(dashes * 9)
+    #         if row_num == 6:
+    #             print(river)
+    #             print(dashes * 9)
+
+    #     for letter in columns:
+    #         print("   {}  ".format(letter), end="")
 
     def print_board(self):
         """Prints game board."""
@@ -905,30 +924,25 @@ game = XiangqiGame()
 # game.make_move('h3','e3') #CM?
 
 
-print(game.get_game_state())
 
-# elephant tests
-game.make_move('a1','a2')
-game.make_move('a7','a6')
-game.make_move('i1','i2')
-game.make_move('i7','i6')
-game.make_move('a2','d2')
-game.make_move('g7','g6')
-game.make_move('i2','f2')
-game.make_move('a6','a5')
-game.make_move('e4','e5')
-game.make_move('a10','a6')
-game.make_move('h3','i3')
-game.make_move('a5','a4')
-game.make_move('i3','i6')
-game.make_move('a4','a3')
-game.make_move('i6','i8')
-game.make_move('g10','i8')
+
+game9 = XiangqiGame()
+
+
+game10 = XiangqiGame()
+# Black is in Check
+game10.make_move('h3','h5')
+game10.make_move('i7','i6')
+status = game10.make_move('h5','e5')
+game10.is_in_check("black")       
+print(status) 
+
+
+print(game10.get_game_state())
 
 
 
 
-
-game.print_board()
+game10.print_board()
 
 
