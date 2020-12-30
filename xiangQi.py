@@ -2,6 +2,8 @@
 # Date: 12/23/2020
 # Description: Implemenation of Xiangqi in Python.
 
+import unittest
+
 class XiangqiGame: 
     """Create XQ Game class, which sets the board and controls game state"""
 
@@ -902,9 +904,31 @@ game = XiangqiGame()
 # game.make_move('i3','i2')
 # game.make_move('h3','e3') #CM?
 
-print(game.get_player_turn())
+
 print(game.get_game_state())
+
+# elephant tests
+game.make_move('a1','a2')
+game.make_move('a7','a6')
+game.make_move('i1','i2')
+game.make_move('i7','i6')
+game.make_move('a2','d2')
+game.make_move('g7','g6')
+game.make_move('i2','f2')
+game.make_move('a6','a5')
+game.make_move('e4','e5')
+game.make_move('a10','a6')
+game.make_move('h3','i3')
+game.make_move('a5','a4')
+game.make_move('i3','i6')
+game.make_move('a4','a3')
+game.make_move('i6','i8')
+game.make_move('g10','i8')
+
+
 
 
 
 game.print_board()
+
+

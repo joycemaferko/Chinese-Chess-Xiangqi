@@ -171,6 +171,15 @@ class xiangQi_test(unittest.TestCase):
         move = game4.make_move('c10','a8')
         self.assertFalse(move)
 
+        # Invalid move (elephant cannot cross river)
+        game4.make_move('g6','g5')
+        game4.make_move('e1','e2')
+        game4.make_move('i8','g6')
+        game4.make_move('e2','e3')
+        move = game4.make_move('g6','i4')
+        self.assertFalse(move)
+       
+
         
 
 if __name__ == '__main__':    
