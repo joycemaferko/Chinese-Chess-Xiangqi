@@ -251,7 +251,7 @@ class XiangqiGame:
 
 
     def check_for_check(self):
-        """check potential moves for all pieces of a color, add them to a set.
+        """check potential moves for all pieces of a color.
         If opposing General's position is present in the set, General is in check. 
         Set that color to in-check.
         """
@@ -279,6 +279,7 @@ class XiangqiGame:
                             new_row, self._board):
                             self.set_black_in_check(True)
                             return True
+                        
 
                     # mover is black. Check valid moves against red general's 
                     # position
@@ -290,6 +291,9 @@ class XiangqiGame:
                             new_row, self._board):
                             self.set_red_in_check(True)
                             return True
+
+        return False
+                        
 
 
     def check_for_checkmate(self, player):
@@ -933,8 +937,9 @@ game10 = XiangqiGame()
 # Black is in Check
 game10.make_move('h3','h5')
 game10.make_move('i7','i6')
-status = game10.make_move('h5','e5')
-game10.is_in_check("black")       
+game10.make_move('h5','e5')
+game10.make_move('e10','f9')
+status = game10.check_for_check()
 print(status) 
 
 

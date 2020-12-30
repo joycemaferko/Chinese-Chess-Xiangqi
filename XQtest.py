@@ -340,8 +340,26 @@ class xiangQi_test(unittest.TestCase):
         game10.make_move('h3','h5')
         game10.make_move('i7','i6')
         game10.make_move('h5','e5')
-        status = game10.is_in_check("black")
+        status = game10.check_for_check()
         self.assertTrue(status)
+
+        # Black moves out of check
+        game10.make_move('e10','f9')
+        status = game10.check_for_check()
+        self.assertFalse(status)
+
+        # Black back in check
+        game10.make_move('e5','f5')
+        game10.make_move('f9','e10')
+        game10.make_move('f5','e5')
+        status = game10.check_for_check()
+        self.assertTrue(status)
+
+        # Black moves out of check with a block
+        game10.make_move('c10','e8')
+        status = game10.check_for_check()
+        self.assertFalse(status)
+
 
 
 if __name__ == '__main__':    
