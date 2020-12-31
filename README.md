@@ -1,11 +1,11 @@
 # Chinese-Chess-Xiangqi
-A two-player game of Chinese Chess (Xiangqi) programmed in Python
+## A two-player game of Chinese Chess (Xiangqi) programmed in Python
 
-Author: Matthew Joyce
+### Author: Matthew Joyce
 
-Date: 12/31/2020
+### Date: 12/31/2020
 
-Description: Implemenation of Chinese Chess (Xiangqi) in Python. The rules can be found here (https://en.wikipedia.org/wiki/Xiangqi).
+#### Description: Implemenation of Chinese Chess (Xiangqi) in Python. The rules can be found here (https://en.wikipedia.org/wiki/Xiangqi).
 
 * This game is played using algebraic notation to represent the squares on the board. For example, "a4" represents the piece in column "a" and row "4".
 
