@@ -15,9 +15,10 @@ To play, initiate an instance of the XiangqiGame class. For example:
 game = XiangqiGame().
 
 Next, include the following two lines to print the board and display the 
-current state of the game (UNFINISHED, RED_WINS, BLACK_WINS)
+current state of the game (UNFINISHED, RED_WINS, or BLACK_WINS, respectively)
 
 print(game.get_game_state())
+
 game.print_board()
 
 Finally, players move using the command: game.make_move("<square from>", "<square_to>")
