@@ -72,6 +72,7 @@ class GamePiece:
         if destination is not None:
             if moving_piece.get_color() == destination.get_color():
                 return True
+
         
 class Chariot(GamePiece):
     """Creates Chariot sub-class"""
@@ -126,7 +127,6 @@ class Chariot(GamePiece):
         return True
 
 
-
 class Horse(GamePiece):
     """Creates Horse sub-class"""
 
@@ -165,6 +165,7 @@ class Horse(GamePiece):
                     return False
 
         return True
+
 
 class Elephant(GamePiece):
     """Creates Elephant sub-class"""
@@ -213,6 +214,7 @@ class Elephant(GamePiece):
         
         return True
 
+
 class Adviser(GamePiece):
     """Creates Adviser sub-class"""
     
@@ -245,6 +247,7 @@ class Adviser(GamePiece):
 
         return True
 
+
 class General(GamePiece):
     """Creates General sub-class"""
     
@@ -270,6 +273,7 @@ class General(GamePiece):
             return False
 
         return True
+
 
 class Cannon(GamePiece):
     """Creates Cannon sub-class"""
@@ -373,6 +377,7 @@ class Cannon(GamePiece):
 
         return True
 
+
 class Soldier(GamePiece):
     """Creates Soldier sub-class"""
     
@@ -406,6 +411,7 @@ class Soldier(GamePiece):
                 return False
 
         return True
+        
 
 class XiangqiGame: 
     """Create XQ Game class, which sets the board and controls game state"""
