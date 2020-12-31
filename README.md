@@ -1,7 +1,7 @@
 # Chinese-Chess-Xiangqi
-A two-player game of Chinese Chess (Xiangqi) programmed in Python
+###A two-player game of Chinese Chess (Xiangqi) programmed in Python
 
-Author: Matthew Joyce
+###Author: Matthew Joyce
 
 Date: 12/31/2020
 
@@ -26,3 +26,5 @@ make_move() will return True if the move is valid, otherwise it will return Fals
 The game continues until one side has placed the other side's general in checkmate, where they have no valid moves to escape.
 
 Red has the first move.
+
+![Capture](https://user-images.githubusercontent.com/55785709/103416240-167e2a00-4b86-11eb-8588-cfc390572a2c.PNG)
