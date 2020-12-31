@@ -21,7 +21,8 @@ print(game.get_game_state())
 
 game.print_board()
 
-Finally, players move using the command: game.make_move("<square from>", "<square_to>")
+Finally, players move using the command: game.make_move("square from", "square_to")
+
 For example, to move the red general one square forward from his starting position, enter:
 game.make_move("e1", "e2")
 
