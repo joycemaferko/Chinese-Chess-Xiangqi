@@ -1,7 +1,7 @@
 # Chinese-Chess-Xiangqi
-###A two-player game of Chinese Chess (Xiangqi) programmed in Python
+A two-player game of Chinese Chess (Xiangqi) programmed in Python
 
-###Author: Matthew Joyce
+Author: Matthew Joyce
 
 Date: 12/31/2020
 
