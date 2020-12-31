@@ -346,6 +346,26 @@ class xiangQi_test(unittest.TestCase):
         move = game14.make_move('h7','e7')
         self.assertFalse(move)
 
+    def test_invalid_coords(self):
+        """Conducts input validation on move parameters"""
+
+        # Valid coords
+        game15 = XiangqiGame()
+        move = game15.make_move('a1','a2')
+        self.assertTrue(move)
+
+        # Invalid column
+        move = game15.make_move('j10','j9')
+        self.assertFalse(move)
+
+        # Invalid row
+        move = game15.make_move('i11','j10')
+        self.assertFalse(move)
+
+        # Valid coords 
+        move = game15.make_move('i10','i9')
+        self.assertTrue(move)
+
     def test_check(self):
         """Tests whether color is in check"""
 

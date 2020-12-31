@@ -411,7 +411,7 @@ class Soldier(GamePiece):
                 return False
 
         return True
-        
+
 
 class XiangqiGame: 
     """Create XQ Game class, which sets the board and controls game state"""
@@ -533,7 +533,16 @@ class XiangqiGame:
         neccessary. Returns true if move is successful, false otherwise
         
         """
-        #Parses string input and matches the string values to the list of lists board.
+        valid_columns = ['a','b','c','d','e','f','g','h','i']
+        valid_rows = ['1','2','3','4','5','6','7','8','9','10']
+
+        # Checks to ensure move coordinates are valid for the board
+        if str_from[0] not in valid_columns or str_from[1:] not in valid_rows:
+            return False
+        if str_to[0] not in valid_columns or str_from[1:] not in valid_rows:
+            return False
+
+        # Parses string input and matches the string values to the list of lists board.
         current_col = ord(str_from[0]) - 97
         current_row = int(str_from[1:]) - 1
         new_col = ord(str_to[0]) - 97
@@ -860,6 +869,8 @@ class XiangqiGame:
                 self.set_game_state("RED_WINS")
 
 game = XiangqiGame()
+
+
 
 print(game.get_game_state())
 
