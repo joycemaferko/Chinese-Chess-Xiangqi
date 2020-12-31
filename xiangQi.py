@@ -383,7 +383,6 @@ class XiangqiGame:
                         return False
 
             if count == 0:
-                print("Checkmate!")
                 self.set_game_state("BLACK_WINS")
 
         # Player has put their opponent in check. Iterate thorugh all squares 
@@ -468,7 +467,6 @@ class XiangqiGame:
                         return False
 
             if count == 0:
-                print("Checkmate!")
                 self.set_game_state("RED_WINS")
 
 class GamePiece:
@@ -855,99 +853,8 @@ class Soldier(GamePiece):
 
 game = XiangqiGame()
 
+print(game.get_game_state())
 
-
-# BLACK WINS
-# print(game.make_move('h3','f3'))
-# print(game.make_move('h8','f8'))
-# print(game.make_move('e1','d2'))
-# print(game.make_move('f8','e8'))
-# print(game.make_move('d2','e2'))
-# print(game.make_move('i7','i6'))
-# print(game.make_move('f3','e3'))
-# print(game.make_move('e8','e4'))
-# print(game.make_move('e3','e7'))
-# print(game.make_move('a10','a9'))
-# print(game.make_move('e7','a7'))
-# print(game.make_move('a9','d9'))
-# print(game.make_move('e2','e1'))
-# print(game.make_move('d9','d1'))
-# print(game.make_move('e1','e2'))
-# print(game.make_move('i10','i9'))
-# print(game.make_move('i4','i5'))
-# print(game.make_move('i9','h9'))
-# print(game.make_move('i5','i6'))
-# print(game.make_move('h9','h1'))
-# print(game.make_move('i6','h6'))
-# print(game.make_move('h1','i1'))
-# print(game.make_move('h6','g6'))
-# print(game.make_move('d1','c1'))
-# print(game.make_move('g6','g7'))
-# print(game.make_move('i1','g1'))
-# print(game.make_move('g7','g8'))
-# print(game.make_move('g1','f1'))
-# print(game.make_move('a4','a5'))
-# print(game.make_move('c1','b1'))
-# print(game.make_move('a5','a6'))
-# print(game.make_move('b1','a1'))
-# print(game.make_move('g4','g5'))
-# print(game.make_move('a1','a3'))
-# print(game.make_move('g5','g6'))
-# print(game.make_move('a3','b3'))
-# print(game.make_move('g6','g7'))
-# print(game.make_move('b3','d3'))
-# print(game.make_move('g8','h8'))
-# print(game.make_move('d3','d4'))
-# print(game.make_move('h8','i8'))
-# print(game.make_move('f1','f4'))
-# print(game.make_move('i8','i9'))
-# print(game.make_move('b8','e8')) #CM?
-
-#RED CM
-# game.make_move('a1','a2')
-# game.make_move('a7','a6')
-# game.make_move('i1','i2')
-# game.make_move('i7','i6')
-# game.make_move('a2','d2')
-# game.make_move('g7','g6')
-# game.make_move('i2','f2')
-# game.make_move('a6','a5')
-# game.make_move('e4','e5')
-# game.make_move('a5','a4')
-# game.make_move('b3','e3')
-# game.make_move('a4','a3')
-# game.make_move('e3','e7')
-# game.make_move('i6','i5')
-# game.make_move('e5','e6')
-# game.make_move('i5','i4')
-# game.make_move('a2','d2')
-# game.make_move('e6','f6')
-# game.make_move('i4','i3')
-# game.make_move('f6','g6')
-# game.make_move('i3','i2')
-# game.make_move('h3','e3') #CM?
-
-
-
-
-game9 = XiangqiGame()
-
-
-game10 = XiangqiGame()
-# Black is in Check
-game10.make_move('h3','h5')
-game10.make_move('i7','i6')
-game10.make_move('h5','e5')
-game10.make_move('e10','f9')
-status = game10.check_for_check()
-print(status) 
-
-
-print(game10.get_game_state())
-
-
-
-
-game10.print_board()
+game.print_board()
 
 

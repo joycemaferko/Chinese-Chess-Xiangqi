@@ -331,6 +331,21 @@ class xiangQi_test(unittest.TestCase):
         move = game9.make_move('i8','d8')
         self.assertFalse(move)
 
+    def test_fratricide(self):
+        """Tests to ensure a player cannot capture their own piece"""
+
+        # Invalid move red (fratricide)
+        game14 = XiangqiGame()
+        move = game14.make_move('i1','i4')
+        self.assertFalse(move)
+
+        # Invalid move black (fratricide)
+        game14.make_move('i1','i3')
+        game14.make_move('h8','h7')
+        game14.make_move('i4','i5')
+        move = game14.make_move('h7','e7')
+        self.assertFalse(move)
+
     def test_check(self):
         """Tests whether color is in check"""
 
@@ -359,6 +374,113 @@ class xiangQi_test(unittest.TestCase):
         game10.make_move('c10','e8')
         status = game10.check_for_check()
         self.assertFalse(status)
+
+        # Red in check
+        game11 = XiangqiGame()
+        game11.make_move('i4','i5')
+        game11.make_move('i10','i9')
+        game11.make_move('i5','i6')
+        game11.make_move('i9','f9')
+        game11.make_move('i6','i7')
+        game11.make_move('f9','f6')
+        game11.make_move('i7','i8')
+        game11.make_move('f6','e6')
+        game11.make_move('i8','i9')
+        game11.make_move('e6','e4')
+        status = game11.check_for_check()
+        self.assertTrue(status)
+
+        # Red general moves himself out of check
+        game11.make_move('e1','f2')
+        status = game11.check_for_check()
+        self.assertFalse(status)
+
+        # Black chases red back into check
+        game11.make_move('e4','f4')
+        status = game11.check_for_check()
+        self.assertTrue(status)
+
+    def test_checkmate(self):
+        """Test for checkmate conditions, ie, a player in check has no valid 
+        moves to get themselves out of check.  
+        """
+        
+        # Black checkmate; Red wins
+        game12 = XiangqiGame()
+        game12.make_move('a1','a2')
+        game12.make_move('a7','a6')
+        game12.make_move('i1','i2')
+        game12.make_move('i7','i6')
+        game12.make_move('a2','d2')
+        game12.make_move('g7','g6')
+        game12.make_move('i2','f2')
+        game12.make_move('a6','a5')
+        game12.make_move('e4','e5')
+        game12.make_move('a5','a4')
+        game12.make_move('b3','e3')
+        game12.make_move('a4','a3')
+        game12.make_move('e3','e7')
+        game12.make_move('i6','i5')
+        game12.make_move('e5','e6')
+        game12.make_move('i5','i4')
+        game12.make_move('a2','d2')
+        game12.make_move('e6','f6')
+        game12.make_move('i4','i3')
+        game12.make_move('f6','g6')
+        game12.make_move('i3','i2')
+        game12.make_move('h3','e3')
+        status = game12.get_game_state()
+        self.assertEqual(status, "RED_WINS")
+
+        
+        # Red checkmate; Black wins
+        game13 = XiangqiGame()
+        game13.make_move('h3','f3')
+        game13.make_move('h8','f8')
+        game13.make_move('e1','d2')
+        game13.make_move('f8','e8')
+        game13.make_move('d2','e2')
+        game13.make_move('i7','i6')
+        game13.make_move('f3','e3')
+        game13.make_move('e8','e4')
+        game13.make_move('e3','e7')
+        game13.make_move('a10','a9')
+        game13.make_move('e7','a7')
+        game13.make_move('a9','d9')
+        game13.make_move('e2','e1')
+        game13.make_move('d9','d1')
+        game13.make_move('e1','e2')
+        game13.make_move('i10','i9')
+        game13.make_move('i4','i5')
+        game13.make_move('i9','h9')
+        game13.make_move('i5','i6')
+        game13.make_move('h9','h1')
+        game13.make_move('i6','h6')
+        game13.make_move('h1','i1')
+        game13.make_move('h6','g6')
+        game13.make_move('d1','c1')
+        game13.make_move('g6','g7')
+        game13.make_move('i1','g1')
+        game13.make_move('g7','g8')
+        game13.make_move('g1','f1')
+        game13.make_move('a4','a5')
+        game13.make_move('c1','b1')
+        game13.make_move('a5','a6')
+        game13.make_move('b1','a1')
+        game13.make_move('g4','g5')
+        game13.make_move('a1','a3')
+        game13.make_move('g5','g6')
+        game13.make_move('a3','b3')
+        game13.make_move('g6','g7')
+        game13.make_move('b3','d3')
+        game13.make_move('g8','h8')
+        game13.make_move('d3','d4')
+        game13.make_move('h8','i8')
+        game13.make_move('f1','f4')
+        game13.make_move('i8','i9')
+        game13.make_move('b8','e8')
+        status = game13.get_game_state()
+        self.assertEqual(status, "BLACK_WINS")
 
 
 
