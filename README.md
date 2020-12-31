@@ -19,7 +19,7 @@ Description: Implemenation of Chinese Chess (Xiangqi) in Python. The rules can b
 
 * Finally, players move using the command: game.make_move("square from", "square_to")
 
-For example, to move the red general one square forward from his starting position, enter: game.make_move("e1", "e2")
+  *For example, to move the red general one square forward from his starting position, enter: game.make_move("e1", "e2")
 
 * make_move() will return True if the move is valid, otherwise it will return False. If a player enters an invalid move, it remains their turn until they have played a valid move.
 
